@@ -10,7 +10,10 @@ class Grid extends Component {
       tiles,
       onTileClick,
       gridSize,
+      disabled,
     } = this.props;
+
+    console.log(tiles);
 
     return (
       <div className={className}>
@@ -21,7 +24,7 @@ class Grid extends Component {
                 {...tile}
                 key={`tile-${tileId}`}
                 correct={tile.tileId + 1 === tile.number}
-                onClick={onTileClick}
+                onClick={disabled ? null : onTileClick}
                 visible={tile.number < gridSize ** 2}
               />
             );

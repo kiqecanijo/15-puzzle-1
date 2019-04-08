@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FacebookLogin from 'react-facebook-login';
 import { getTileCoords, distanceBetween, invert } from '../lib/utils';
 import Grid from './Grid';
 import Menu from './Menu';
@@ -150,7 +151,9 @@ class Game extends Component {
 
   onTileClick = tile => {
     if (
-      this.state.gameState === GAME_OVER || this.state.gameState === GAME_PAUSED
+      !this.state.facebook ||
+      this.state.gameState === GAME_OVER ||
+      this.state.gameState === GAME_PAUSED
     ) {
       return;
     }
@@ -193,6 +196,14 @@ class Game extends Component {
     }
   };
 
+  facebookResponse(response) {
+    this.setState(prevState => ({ ...prevState, facebook: response }));
+  }
+
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
   render() {
     const {
       className,
@@ -216,6 +227,18 @@ class Game extends Component {
           onNewClick={onNewClick}
           gameState={this.state.gameState}
         />
+
+        {this.state.facebook &&
+          <div className="userInfo">
+            <img src={this.state.facebook.picture.data.url} />
+            <p>{this.state.facebook.name}</p>
+          </div> ||
+          <FacebookLogin
+            appId="262814888001740"
+            autoLoad={false}
+            fields="name,email,picture"
+            callback={res => this.facebookResponse(res)}
+          />}
         <Grid
           gridSize={gridSize}
           tileSize={tileSize}
