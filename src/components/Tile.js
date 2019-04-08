@@ -61,7 +61,7 @@ export default styled(Tile)`
   cursor: pointer;
   background-color: ${props => props.correct ? '#226666' : '#D4726A'};
   transition-property: top, left, background-color;
-  transition-duration: .300s;
+  transition-duration: .200s;
   transition-timing-function: ease-in;
 
   .tile-number {

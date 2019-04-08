@@ -3,6 +3,7 @@ import FacebookLogin from 'react-facebook-login';
 import { getTileCoords, distanceBetween, invert } from '../lib/utils';
 import Grid from './Grid';
 import Menu from './Menu';
+
 import {
   GAME_IDLE,
   GAME_OVER,
@@ -219,32 +220,35 @@ class Game extends Component {
 
     return (
       <div className={className}>
-        <Menu
-          seconds={this.state.seconds}
-          moves={this.state.moves}
-          onResetClick={onResetClick}
-          onPauseClick={this.onPauseClick}
-          onNewClick={onNewClick}
-          gameState={this.state.gameState}
-        />
-
         {this.state.facebook &&
-          <div className="userInfo">
-            <img src={this.state.facebook.picture.data.url} />
-            <p>{this.state.facebook.name}</p>
-          </div> ||
-          <FacebookLogin
-            appId="262814888001740"
-            autoLoad={false}
-            fields="name,email,picture"
-            callback={res => this.facebookResponse(res)}
-          />}
+          <Menu
+            seconds={this.state.seconds}
+            moves={this.state.moves}
+            onResetClick={onResetClick}
+            onPauseClick={this.onPauseClick}
+            onNewClick={onNewClick}
+            gameState={this.state.gameState}
+            logged={false | this.state.facebook}
+          >
+            <div>
+              <img src={this.state.facebook.picture.data.url} />
+              <p>{this.state.facebook.name}</p>
+            </div>
+          </Menu>}
         <Grid
           gridSize={gridSize}
           tileSize={tileSize}
           tiles={this.state.tiles}
           onTileClick={this.onTileClick}
-        />
+          logged={this.state.facebook}
+        >
+          <FacebookLogin
+            appId="262814888001740"
+            autoLoad={false}
+            fields="name,email,picture"
+            callback={res => this.facebookResponse(res)}
+          />
+        </Grid>
         <Dialog
           title="Congrats!"
           actions={actions}
@@ -278,7 +282,7 @@ Game.propTypes = {
 };
 
 Game.defaultProps = {
-  tileSize: 90,
+  tileSize: 120,
   gridSize: 4,
   moves: 0,
   seconds: 0,

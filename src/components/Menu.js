@@ -17,7 +17,7 @@ import MediaQuery from 'react-responsive';
 const StyledToolbar = styled(Toolbar)`
 
 @media (max-width: 1190px) {
-  
+
   & {
     justify-content: center !important;
   }
@@ -65,6 +65,7 @@ class Menu extends Component {
           text="React Puzzle Games - 15 Puzzle"
         />
         <ToolbarGroup>
+          {this.props.children}
           <RaisedButton
             className="menuButton"
             label="New game"

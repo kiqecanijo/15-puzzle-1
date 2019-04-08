@@ -17,6 +17,7 @@ class Grid extends Component {
 
     return (
       <div className={className}>
+        {!this.props.logged && this.props.children}
         <div className="tiles">
           {tiles.map((tile, tileId) => {
             return (

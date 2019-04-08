@@ -42,13 +42,13 @@ class App extends Component {
       <div className={className}>
         <Game
           gridSize={4}
-          tileSize={90}
+          tileSize={120}
           numbers={this.state.level.tileSet}
           onResetClick={this.onResetClick}
           onNewClick={this.onNewClick}
           original={this.state.original.tileSet}
         />
-        <Footer />
+        {/*<Footer />*/}
       </div>
     );
   }
