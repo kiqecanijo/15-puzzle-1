@@ -201,10 +201,6 @@ class Game extends Component {
     this.setState(prevState => ({ ...prevState, facebook: response }));
   }
 
-  componentDidUpdate() {
-    console.log(this.state);
-  }
-
   render() {
     const {
       className,

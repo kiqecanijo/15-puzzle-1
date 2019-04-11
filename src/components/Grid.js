@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Tile, { propTypes as TilePropTypes } from './Tile';
 
+const disabledArea = {
+  WebkitFilter: 'opacity(.2)',
+  filter: 'opacity(.2)',
+};
+
 class Grid extends Component {
   render() {
     const {
@@ -18,7 +23,10 @@ class Grid extends Component {
     return (
       <div className={className}>
         {!this.props.logged && this.props.children}
-        <div className="tiles">
+        <div
+          className="tiles"
+          style={!this.props.logged && disabledArea || null}
+        >
           {tiles.map((tile, tileId) => {
             return (
               <Tile
