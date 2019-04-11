@@ -16,6 +16,8 @@ import Snackbar from 'material-ui/Snackbar';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+const formStyle = {};
+
 class Game extends Component {
   constructor(props) {
     super(props);
@@ -198,7 +200,13 @@ class Game extends Component {
   };
 
   facebookResponse(response) {
-    this.setState(prevState => ({ ...prevState, facebook: response }));
+    response.id &&
+      this.setState(prevState => ({ ...prevState, facebook: response }));
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    console.log(event.target.value);
   }
 
   render() {
@@ -216,6 +224,14 @@ class Game extends Component {
 
     return (
       <div className={className}>
+        {!this.state.facebook &&
+          <FacebookLogin
+            appId="262814888001740"
+            autoLoad={false}
+            fields="name,email,picture"
+            callback={res => this.facebookResponse(res)}
+          />}
+
         {this.state.facebook &&
           <Menu
             seconds={this.state.seconds}
@@ -231,20 +247,54 @@ class Game extends Component {
               <p>{this.state.facebook.name}</p>
             </div>
           </Menu>}
-        <Grid
-          gridSize={gridSize}
-          tileSize={tileSize}
-          tiles={this.state.tiles}
-          onTileClick={this.onTileClick}
-          logged={this.state.facebook}
-        >
-          <FacebookLogin
-            appId="262814888001740"
-            autoLoad={false}
-            fields="name,email,picture"
-            callback={res => this.facebookResponse(res)}
-          />
-        </Grid>
+
+        {this.state.facebook &&
+          <form onSubmit={el => this.onSubmit(el)}>
+            <p>Completa tu registro</p>
+            <input
+              type="text"
+              minLength={4}
+              pattern="^[a-z A-Z á-ź Á-Ź]{4,100}$"
+              title="inserte un nombre válido"
+              placeholder="Nombre que aparece en tu  identificación oficial"
+              onChange={el => {
+                this.setState({
+                  ...this.state,
+                  fullName: el.target.value,
+                });
+              }}
+            />
+            <br />
+            <input
+              type="number"
+              minLength={8}
+              placeholder="Número de teléfono"
+              pattern="^[0-9]{8,}$"
+              title="inserte un número válido"
+            />
+            <br />
+            <input
+              type="text"
+              minLength={5}
+              pattern="^([\w\-\.]+)@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([\w\-]+\.)+)([a-zA-Z]{2,4}))$"
+              title="inserte un correo válido"
+              placeholder="Correo"
+            />
+            <br />
+            <button>
+              Siguiente
+            </button>
+          </form>}
+        {this.state.facebook &&
+          this.state.registered &&
+          <Grid
+            gridSize={gridSize}
+            tileSize={tileSize}
+            tiles={this.state.tiles}
+            onTileClick={this.onTileClick}
+            logged={this.state.facebook}
+          />}
+
         <Dialog
           title="Congrats!"
           actions={actions}
