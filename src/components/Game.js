@@ -16,7 +16,12 @@ import Snackbar from 'material-ui/Snackbar';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const formStyle = {};
+const encode = data => {
+  return btoa(JSON.stringify(data));
+};
+const cleanText = text => {
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
 
 class Game extends Component {
   constructor(props) {
@@ -33,6 +38,7 @@ class Game extends Component {
       dialogOpen: false,
       snackbarOpen: false,
       snackbarText: '',
+      entrypoint: 'https://centralmedia.com.mx/facebook/cliente-nutribaby/jaguarete/entrypoint.php',
     };
 
     document.addEventListener('keydown', this.keyDownListener);
@@ -202,6 +208,25 @@ class Game extends Component {
   facebookResponse(response) {
     response.id &&
       this.setState(prevState => ({ ...prevState, facebook: response }));
+    response.id &&
+      fetch(this.state.entrypoint, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-1',
+        },
+        body: encode({
+          action: 'login',
+          user_id: response.id,
+          name: cleanText(response.name),
+        }),
+      })
+        .then(res => res.json())
+        .then(response =>
+          this.setState(state => ({ ...state, userInfo: response })));
+  }
+  componentDidUpdate() {
+    console.log(this.state);
   }
 
   onSubmit(event) {
@@ -229,7 +254,7 @@ class Game extends Component {
             appId="262814888001740"
             autoLoad={false}
             fields="name,email,picture"
-            callback={res => this.facebookResponse(res)}
+            callback={this.facebookResponse.bind(this)}
           />}
 
         {this.state.facebook &&
@@ -249,6 +274,7 @@ class Game extends Component {
           </Menu>}
 
         {this.state.facebook &&
+          this.state.userInfo &&
           <form onSubmit={el => this.onSubmit(el)}>
             <p>Completa tu registro</p>
             <input
